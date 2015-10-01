@@ -14,17 +14,13 @@ module.exports = (robot) ->
     imageMe msg, msg.match[2], true, (url) ->
       msg.send url
 
-  robot.respond /(?:mo?u)?sta(?:s|c)he?(?: me)? (.*)/i, (msg) ->
-    type = Math.floor(Math.random() * 6)
-    mustachify = "http://mustachify.me/#{type}?src="
-    imagery = msg.match[1]
-
 imageMe = (msg, query, animated, faces, cb) ->
   cb = animated if typeof animated == 'function'
   cb = faces if typeof faces == 'function'
-  q = v: '1.0', rsz: '8', q: query + '+destiny', safe: 'active'
+  q = v: '1.0', rsz: '8', q: query, safe: 'off'
   q.imgtype = 'animated' if typeof animated is 'boolean' and animated is true
   q.imgtype = 'face' if typeof faces is 'boolean' and faces is true
+  
   msg.http('http://ajax.googleapis.com/ajax/services/search/images')
     .query(q)
     .get() (err, res, body) ->
@@ -39,5 +35,4 @@ ensureImageExtension = (url) ->
   if /(png|jpe?g|gif)/i.test(ext)
     url
   else
-
     "#{url}#.png"
