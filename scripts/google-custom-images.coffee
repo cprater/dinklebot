@@ -78,7 +78,7 @@ imageMe = (msg, query, animated, faces, cb) ->
           msg.send "Encountered an error :( #{err}"
           return
         if res.statusCode isnt 200
-          msg.send "Bad HTTP response :( #{res.statusCode}, #{res.message"
+          msg.send "Bad HTTP response :( #{res.statusCode}, #{res.message}"
           return
         images = JSON.parse(body)
         images = images.responseData?.results
