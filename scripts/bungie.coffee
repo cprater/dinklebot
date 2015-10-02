@@ -17,7 +17,7 @@ getPlayerId = (bot, name, callback) ->
     foundData = response[0]
 
     if !foundData
-      bot.send 'Player #{name} not found :('
+      bot.send 'Guardian '+name+' not found :('
       deferred.reject()
       return
 
