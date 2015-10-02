@@ -41,7 +41,7 @@ imageMe = (msg, query, animated, faces, cb) ->
       q.tbs = 'itp:animated'
     if faces is true
       q.imgType = 'face'
-    url = 'http://www.googleapis.com/customsearch/v1'
+    url = 'https://www.googleapis.com/customsearch/v1'
     msg.http(url)
       .query(q)
       .get() (err, res, body) ->
