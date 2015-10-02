@@ -49,7 +49,7 @@ imageMe = (msg, query, animated, faces, cb) ->
           msg.send "Encountered an error :( #{err}"
           return
         if res.statusCode isnt 200
-          msg.send "Bad HTTP response :( #{JSON.stringify(JSON.decycle(a))}";
+          msg.send "Bad HTTP response :( #{JSON.stringify(JSON.decycle(res))}";
           return
         response = JSON.parse(body)
         if response?.items
