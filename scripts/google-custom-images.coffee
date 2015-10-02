@@ -13,7 +13,7 @@ module.exports = (robot) ->
     imageMe msg, msg.match[3], (url) ->
       msg.send url
 
-  robot.respond /gif( me)? (.*)/i, (msg) ->
+  robot.respond /animate( me)? (.*)/i, (msg) ->
     imageMe msg, msg.match[2], true, (url) ->
       msg.send url
 
@@ -64,6 +64,7 @@ imageMe = (msg, query, animated, faces, cb) ->
           ) error for error in response.error.errors if response.error?.errors
   else
     # Using deprecated Google image search API
+    msg.send 'going old school'
     q = v: '1.0', rsz: '8', q: query, safe: 'active'
     if animated is true
       q.as_filetype = 'gif'
