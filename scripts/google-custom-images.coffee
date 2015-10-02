@@ -4,13 +4,9 @@
 # Configuration
 #   HUBOT_GOOGLE_CSE_KEY - Your Google developer API key
 #   HUBOT_GOOGLE_CSE_ID - The ID of your Custom Search Engine
-#   HUBOT_MUSTACHIFY_URL - Optional. Allow you to use your own mustachify instance.
-#
 # Commands:
 #   hubot image me <query> - The Original. Queries Google Images for <query> and returns a random top result.
 #   hubot animate me <query> - The same thing as `image me`, except adds a few parameters to try to return an animated GIF instead.
-#   hubot mustache me <url> - Adds a mustache to the specified URL.
-#   hubot mustache me <query> - Searches Google Images for the specified query and mustaches it.
 
 module.exports = (robot) ->
   robot.respond /(image|img)( me)? (.*)/i, (msg) ->
@@ -45,7 +41,7 @@ imageMe = (msg, query, animated, faces, cb) ->
       q.tbs = 'itp:animated'
     if faces is true
       q.imgType = 'face'
-    url = 'https://www.googleapis.com/customsearch/v1'
+    url = 'http://www.googleapis.com/customsearch/v1'
     msg.http(url)
       .query(q)
       .get() (err, res, body) ->
