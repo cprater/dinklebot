@@ -13,6 +13,10 @@ module.exports = (robot) ->
   robot.hear /i love you/i, (res) ->
     res.send "loves you too"
 
+  robot.respond /i hate you/i, (res) ->
+    user = res.message.user.name
+    res.send 'No you don\'t '+user+', no you don\'t'
+
   # robot.hear /badger/i, (res) ->
   #   res.send "Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS"
   #
