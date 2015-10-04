@@ -76,7 +76,9 @@ getCharacterInventory = (bot, playerId, characterId) ->
     flatHashes = [].concat itemHashes...
 
     equippedIcons = flatHashes.map (hash) ->
-      definitions[hash].icon
+      prefix = 'http://www.bungie.net'
+      suffix = definitions[hash].icon
+      prefix + suffix
 
     deferred.resolve(equippedIcons)
 
@@ -126,9 +128,6 @@ makeRequest = (bot, endpoint, callback, params) ->
   trailing = '/'
   queryParams = if params then '?'+params else ''
   url = baseUrl+endpoint+trailing+queryParams
-
-  console.log 'UURL URL URL URL URL URL URL URL RL '
-  console.log url
 
   bot.http(url)
     .header('X-API-Key', BUNGIE_API_KEY)
