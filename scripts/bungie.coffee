@@ -25,8 +25,6 @@ module.exports = (robot) ->
     getPlayerId(bot, playerName).then (playerId) ->
       getCharacterId(bot, playerId).then (characterId) ->
         getCharacterInventory(bot, playerId, characterId).then (response) ->
-          console.log 'INSIDE LAST CALLBACK'
-          console.log response
           for url in response
             bot.send url
 
@@ -34,8 +32,6 @@ module.exports = (robot) ->
 getPlayerId = (bot, name) ->
   deferred = new Deferred()
   endpoint = 'SearchDestinyPlayer/1/'+name
-
-  console.log 'INSIDE GET PLAYERID'
 
   makeRequest bot, endpoint, (response) ->
     foundData = response[0]
@@ -55,8 +51,6 @@ getCharacterId = (bot, playerId) ->
   deferred = new Deferred()
   endpoint = '1/Account/'+playerId
 
-  console.log 'INSIDE GET CHARACTER ID'
-
   makeRequest bot, endpoint, (response) ->
     data = response.data
     chars = data.characters
@@ -72,8 +66,6 @@ getCharacterInventory = (bot, playerId, characterId) ->
   deferred = new Deferred()
   endpoint = '1/Account/'+playerId+'/Character/'+characterId+'/Inventory'
   params = 'definitions=true'
-
-  console.log 'INSIDE getCharacterInventory'
 
   callback = (response) ->
     definitions = response.definitions.items
