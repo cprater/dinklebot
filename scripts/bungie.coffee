@@ -18,6 +18,15 @@ module.exports = (robot) ->
       getLastCharacter(bot, playerId).then (response) ->
         bot.send 'Guardian '+playerName+' last played on their '+response
 
+  # Returns a list of images equipped on the last character for a gamertag
+  robot.respond /inventory (.*)/i, (bot) ->
+    playerName = bot.match[1]
+
+    getPlayerId(bot, playerName).then (playerId) ->
+      getCharacterId(bot, playerId).then (characterId) ->
+        getCharacterInventory(bot, playerId, characterId).then (response) ->
+          bot.send response
+
 # Gets general player information from a players gamertag
 getPlayerId = (bot, name) ->
   deferred = new Deferred()
@@ -36,6 +45,44 @@ getPlayerId = (bot, name) ->
 
   deferred.promise
 
+# Gets characterId for last character played
+getCharacterId = (bot, playerId) ->
+  deferred = new Deferred()
+  endpoint = '/1/Account/'+playerId
+
+  makeRequest bot, endpoint, (response) ->
+    data = response.data
+    chars = data.characters
+    recentChar = chars[0]
+
+    characterId = recentChar.characterBase.characterId
+    deferred.resolve(characterId)
+
+  deferred.promise
+
+# Gets Inventory of last played character
+getCharacterInventory = (bot, playerId, characterId) ->
+  deferred = new Deferred()
+  endpoint = '/1/Account/'+playerId+'/Character/'+characterId+'/Inventory'
+  params = 'definitions=true'
+
+  callback = (response) ->
+    definitions = response.definitions.items
+    equippable = response.data.buckets.Equippable
+
+    itemHashes = equippable.map (x) ->
+      x.items.map (item) ->
+        if item.isEquipped then item.itemHash else false
+    flatHashes = [].concat itemHashes...
+
+    equippedIcons = flatHashes.map (hash) ->
+      definitions[hash].icon
+
+    deferred.resolve(equippedIcons)
+
+  makeRequest(bot, endpoint, callback, params)
+  deferred.promise
+
 # Gets genral information about last played character
 getLastCharacter = (bot, playerId) ->
   deferred = new Deferred()
@@ -45,7 +92,7 @@ getLastCharacter = (bot, playerId) ->
   classTypes = ['Titan', 'Hunter', 'Warlock', 'Unknown']
 
   makeRequest bot, endpoint, (response) ->
-    data = response.data || {}
+    data = response.data
     chars = data.characters
     recentChar = chars[0]
     charData = recentChar.characterBase
@@ -73,11 +120,15 @@ getGrimoireScore = (bot, memberId) ->
   deferred.promise
 
 # Sends GET request from an endpoint, needs a success callback
-makeRequest = (bot, endpoint, callback) ->
+makeRequest = (bot, endpoint, callback, params) ->
   BUNGIE_API_KEY = process.env.BUNGIE_API_KEY
   baseUrl = 'https://www.bungie.net/Platform/Destiny/'
   trailing = '/'
-  url = baseUrl+endpoint+trailing
+  queryParams = if params then '?'+params else ''
+  url = baseUrl+endpoint+trailing+queryParams
+
+  console.log 'UURL URL URL URL URL URL URL URL RL '
+  console.log url
 
   bot.http(url)
     .header('X-API-Key', BUNGIE_API_KEY)
