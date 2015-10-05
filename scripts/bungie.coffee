@@ -2,48 +2,6 @@ require('dotenv').load()
 Deferred = require('promise.coffee').Deferred
 
 module.exports = (robot) ->
-  robot.respond /basic/i, (msg) =>
-   #Test custom attachments
-    attachment1 =
-      fallback: "Fallback Text"
-      title: 'NightStalker'
-      title_link: 'http://www.google.com'
-      text: 'Draw from the Void. Light the way.'
-      thumb_url: 'http://www.bungie.net/common/destiny_content/icons/3f7fbeb33b38e534be5675f1cc50e0ac.jpg'
-      color: '#ceae32'
-
-    attachment2 =
-      fallback: "Fallback Text"
-      title: 'NightStalker'
-      title_link: 'http://www.google.com'
-      text: 'Draw from the Void. Light the way.'
-      thumb_url: 'http://www.bungie.net/common/destiny_content/icons/3f7fbeb33b38e534be5675f1cc50e0ac.jpg'
-      color: '#ceae32'
-
-    payload =
-      message: msg.message
-      attachments: [attachment1, attachment2]
-
-    console.log payload
-
-    robot.emit 'slack-attachment', payload
-
-  robot.respond /test (.*)/i, (bot) =>
-    playerName = bot.match[1]
-
-    getPlayerId(bot, playerName).then (playerId) ->
-      getCharacterId(bot, playerId).then (characterId) ->
-        getCharacterInventory(bot, playerId, characterId).then (response) ->
-          items = response.map (item) ->
-            parseItemAttachment(item)
-
-          payload =
-            message: bot.message
-            attachments: items
-
-          console.log 'attachment', payload
-          robot.emit 'slack-attachment', payload
-
   # Returns a grimoire score for a gamertag
   robot.respond /armory (.*)/i, (bot) =>
     playerName = bot.match[1]
@@ -67,8 +25,15 @@ module.exports = (robot) ->
     getPlayerId(bot, playerName).then (playerId) ->
       getCharacterId(bot, playerId).then (characterId) ->
         getCharacterInventory(bot, playerId, characterId).then (response) ->
-          for url in response
-            bot.send url
+          items = response.map (item) ->
+            parseItemAttachment(item)
+
+          payload =
+            message: bot.message
+            attachments: items
+
+          console.log 'attachment', payload
+          robot.emit 'slack-attachment', payload
 
 parseItemAttachment = (item) ->
   data =
