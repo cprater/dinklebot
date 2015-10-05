@@ -13,7 +13,8 @@ module.exports = (robot) ->
             parseItemAttachment(item)
 
           for attachment in attachments
-            robot.emit('slack-attachment', attachment)
+            console.log attachment
+            robot.emit 'slack-attachment', attachment
 
   # Returns a grimoire score for a gamertag
   robot.respond /armory (.*)/i, (bot) =>
@@ -43,12 +44,14 @@ module.exports = (robot) ->
 
 parseItemAttachment = (item) ->
   fields =
-    pretext: '<item.itemLink|item.itemName>'
-    color: item.color
-    fallback: item.itemName
-    title: item.itemDescription
-    short: true
-    thum_url: item.iconLink
+    message: 'Test Message'
+    content:
+      pretext: '<item.itemLink|item.itemName>'
+      color: item.color
+      fallback: item.itemName
+      title: item.itemDescription
+      thumb_url: item.iconLink
+      short: true
 
 # Gets general player information from a players gamertag
 getPlayerId = (bot, name) ->
