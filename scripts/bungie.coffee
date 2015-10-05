@@ -9,8 +9,8 @@ module.exports = (robot) ->
       title: 'NightStalker'
       title_link: 'http://www.google.com'
       text: 'Draw from the Void. Light the way.'
-      thumb_url: 'http://www.bungie.net/common/destiny_content/icons/d0e43f0c27ea2c27ab1cf451a554482c.jpg'
-      color: "#FF0000"
+      thumb_url: 'http://www.bungie.net/common/destiny_content/icons/3f7fbeb33b38e534be5675f1cc50e0ac.jpg'
+      color: '#ceae32'
 
     payload =
       message: msg.message
@@ -113,12 +113,6 @@ getCharacterInventory = (bot, playerId, characterId) ->
     Rare: '#557f9e'
     Legendary: '#4e3263'
     Exotic: '#ceae32'
-  #rarityColor =
-  #  Uncommon: 'rgba(245,245,245,0.9)'
-  #  Common: 'rgba(47, 107, 60, 0.9)'
-  #  Rare: 'rgba(85,127,158,0.9)'
-  #  Legendary: 'rgba(78,50,99,0.9)'
-  #  Exotic: 'rgba(206,174,50,0.9)'
 
   callback = (response) ->
     definitions = response.definitions.items
