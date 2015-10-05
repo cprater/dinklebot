@@ -6,21 +6,14 @@ module.exports = (robot) ->
    #Test custom attachments
     fields = []
     fields.push
-      title: "Field 1: Title"
-      value: "Field 1: Value"
-      short: true
-
-    fields.push
-      title: "Field 2: Title"
-      value: "Field 2: Value"
-      short: true
+      title: 'NightStalker'
+      value: 'Draw from the Void. Light the way.'
+      thumb_url: 'http://www.bungie.net/common/destiny_content/icons/70c0ac0b590646bd50ba4a6f5c6f5631.jpg'
 
     payload =
       message: msg.message
       content:
-        text: "Attachement Demo Text"
         fallback: "Fallback Text"
-        pretext: "This is Pretext"
         color: "#FF0000"
         fields: fields
 
