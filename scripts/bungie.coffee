@@ -3,6 +3,26 @@ Deferred = require('promise.coffee').Deferred
 
 module.exports = (robot) ->
   # Test custom attachments
+  #     fields = []
+  ##fields.push
+  #    title: "Field 1: Title"
+  #    value: "Field 1: Value"
+  #    short: true
+
+  #  fields.push
+  #    title: "Field 2: Title"
+  #    value: "Field 2: Value"
+  #    short: true
+
+  #  payload = 
+  #    message: msg.message
+  #    content:
+  #      text: "Attachement Demo Text"
+  #      fallback: "Fallback Text"
+  #      pretext: "This is Pretext"
+  #      color: "#FF0000"
+  #      fields: fields
+
   robot.respond /test (.*)/i, (bot) =>
     playerName = bot.match[1]
 
@@ -12,14 +32,18 @@ module.exports = (robot) ->
           attachments = response.map (item) ->
             parseItemAttachment(item)
 
-          payload =
-            message: 'Test message text'
-            attachments: attachments
+          for attachment in attachments
+            console.log 'attachment', attachment
+            robot.emit 'slack-attachment', attachment
 
-          console.log("payload")
-          console.log(payload)
+          #payload =
+          #  message: bot.message
+          #  attachments: attachments
 
-          robot.emit 'slack-attachment', payload
+          #console.log("payload")
+          #console.log(payload)
+
+          #robot.emit 'slack-attachment', payload
 
   # Returns a grimoire score for a gamertag
   robot.respond /armory (.*)/i, (bot) =>
@@ -49,12 +73,13 @@ module.exports = (robot) ->
 
 parseItemAttachment = (item) ->
   fields =
-    title: item.itemName
-    title_link: item.itemLink
-    color: item.color
-    fallback: item.itemDescription
-    thumb_url: item.iconLink
-    text: item.itemDescription
+    content:
+      title: item.itemName
+      title_link: item.itemLink
+      color: item.color
+      fallback: item.itemDescription
+      thumb_url: item.iconLink
+      text: item.itemDescription
 
 # Gets general player information from a players gamertag
 getPlayerId = (bot, name) ->
