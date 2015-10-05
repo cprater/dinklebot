@@ -2,26 +2,29 @@ require('dotenv').load()
 Deferred = require('promise.coffee').Deferred
 
 module.exports = (robot) ->
-  # Test custom attachments
-  #     fields = []
-  ##fields.push
-  #    title: "Field 1: Title"
-  #    value: "Field 1: Value"
-  #    short: true
+  robot.respond /basic/i, (msg) =>
+   #Test custom attachments
+    fields = []
+    fields.push
+      title: "Field 1: Title"
+      value: "Field 1: Value"
+      short: true
 
-  #  fields.push
-  #    title: "Field 2: Title"
-  #    value: "Field 2: Value"
-  #    short: true
+    fields.push
+      title: "Field 2: Title"
+      value: "Field 2: Value"
+      short: true
 
-  #  payload = 
-  #    message: msg.message
-  #    content:
-  #      text: "Attachement Demo Text"
-  #      fallback: "Fallback Text"
-  #      pretext: "This is Pretext"
-  #      color: "#FF0000"
-  #      fields: fields
+    payload =
+      message: msg.message
+      content:
+        text: "Attachement Demo Text"
+        fallback: "Fallback Text"
+        pretext: "This is Pretext"
+        color: "#FF0000"
+        fields: fields
+
+    robot.emit 'slack-attachment', payload
 
   robot.respond /test (.*)/i, (bot) =>
     playerName = bot.match[1]
@@ -35,15 +38,6 @@ module.exports = (robot) ->
           payload = attachments[0]
           console.log 'attachment', payload
           robot.emit 'slack-attachment', payload
-
-          #payload =
-          #  message: bot.message
-          #  attachments: attachments
-
-          #console.log("payload")
-          #console.log(payload)
-
-          #robot.emit 'slack-attachment', payload
 
   # Returns a grimoire score for a gamertag
   robot.respond /armory (.*)/i, (bot) =>
