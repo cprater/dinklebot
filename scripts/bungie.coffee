@@ -11,7 +11,7 @@ module.exports = (robot) ->
 
     payload =
       message: msg.message
-      thumb_url: 'http://www.bungie.net/common/destiny_content/icons/70c0ac0b590646bd50ba4a6f5c6f5631.jpg'
+      thumb_url: 'http://www.bungie.net/common/destiny_content/icons/d0e43f0c27ea2c27ab1cf451a554482c.png'
       content:
         fallback: "Fallback Text"
         color: "#FF0000"
@@ -193,6 +193,9 @@ makeRequest = (bot, endpoint, callback, params) ->
   trailing = '/'
   queryParams = if params then '?'+params else ''
   url = baseUrl+endpoint+trailing+queryParams
+
+  console.log("url")
+  console.log(url)
 
   bot.http(url)
     .header('X-API-Key', BUNGIE_API_KEY)
