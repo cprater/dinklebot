@@ -5,11 +5,12 @@ module.exports = (robot) ->
   robot.respond /basic/i, (msg) =>
    #Test custom attachments
     attachment =
-      thumb_url: 'http://www.bungie.net/common/destiny_content/icons/d0e43f0c27ea2c27ab1cf451a554482c.jpg'
       fallback: "Fallback Text"
-      color: "#FF0000"
       title: 'NightStalker'
-      value: 'Draw from the Void. Light the way.'
+      title_link: 'http://www.google.com'
+      text: 'Draw from the Void. Light the way.'
+      thumb_url: 'http://www.bungie.net/common/destiny_content/icons/d0e43f0c27ea2c27ab1cf451a554482c.jpg'
+      color: "#FF0000"
 
     payload =
       message: msg.message
