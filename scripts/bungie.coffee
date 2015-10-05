@@ -34,10 +34,13 @@ module.exports = (robot) ->
     getPlayerId(bot, playerName).then (playerId) ->
       getCharacterId(bot, playerId).then (characterId) ->
         getCharacterInventory(bot, playerId, characterId).then (response) ->
-          attachments = response.map (item) ->
+          items = response.map (item) ->
             parseItemAttachment(item)
 
-          payload = attachments[0]
+          payload =
+            message: bot.message
+            attachments: items
+
           console.log 'attachment', payload
           robot.emit 'slack-attachment', payload
 
@@ -68,14 +71,15 @@ module.exports = (robot) ->
             bot.send url
 
 parseItemAttachment = (item) ->
-  fields =
-    content:
-      title: item.itemName
-      title_link: item.itemLink
-      color: item.color
-      fallback: item.itemDescription
-      thumb_url: item.iconLink
-      text: item.itemDescription
+  data =
+    fallback: item.itemDescription
+    title: item.itemName
+    title_link: item.itemLink
+    color: item.color
+    text: item.itemDescription
+    thumb_url: item.iconLink
+
+  data
 
 # Gets general player information from a players gamertag
 getPlayerId = (bot, name) ->
