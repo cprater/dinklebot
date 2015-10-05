@@ -32,9 +32,9 @@ module.exports = (robot) ->
           attachments = response.map (item) ->
             parseItemAttachment(item)
 
-          for attachment in attachments
-            console.log 'attachment', attachment
-            robot.emit 'slack-attachment', attachment
+          payload = attachments[0]
+          console.log 'attachment', payload
+          robot.emit 'slack-attachment', payload
 
           #payload =
           #  message: bot.message
