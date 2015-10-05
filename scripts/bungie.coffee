@@ -2,8 +2,32 @@ require('dotenv').load()
 Deferred = require('promise.coffee').Deferred
 
 module.exports = (robot) ->
+  # Test custom attachments
+  robot.respond /test/i, (msg) =>
+    fields = []
+    fields.push
+      title: 'Field 1: Title'
+      value: 'Field 1: Value'
+      short: true
+
+    fields.push
+      title: 'Field 2: Title'
+      value: 'Field 2: Value'
+      short: true
+
+    payload =
+      message: msg.message
+      content:
+        text: 'Attachment Demo Text'
+        fallback: 'Fallback Text'
+        pretext: 'This is pretext'
+        color: '#FF0000'
+        fields: fields
+
+    robot.emit 'slack-attachment', payload
+
   # Returns a grimoire score for a gamertag
-  robot.respond /armory (.*)/i, (bot) ->
+  robot.respond /armory (.*)/i, (bot) =>
     playerName = bot.match[1]
 
     getPlayerId(bot, playerName).then (playerId) ->
