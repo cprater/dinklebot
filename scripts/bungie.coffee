@@ -3,28 +3,17 @@ Deferred = require('promise.coffee').Deferred
 
 module.exports = (robot) ->
   # Test custom attachments
-  robot.respond /test/i, (msg) =>
-    fields = []
-    fields.push
-      title: 'Field 1: Title'
-      value: 'Field 1: Value'
-      short: true
+  robot.respond /test (.*)/i, (bot) =>
+    playerName = bot.match[1]
 
-    fields.push
-      title: 'Field 2: Title'
-      value: 'Field 2: Value'
-      short: true
+    getPlayerId(bot, playerName).then (playerId) ->
+      getCharacterId(bot, playerId).then (characterId) ->
+        getCharacterInventory(bot, playerId, characterId).then (response) ->
+          attachments = response.map (item) ->
+            parseItemAttachment(item)
 
-    payload =
-      message: msg.message
-      content:
-        text: 'Attachment Demo Text'
-        fallback: 'Fallback Text'
-        pretext: 'This is pretext'
-        color: '#FF0000'
-        fields: fields
-
-    robot.emit 'slack-attachment', payload
+          for attachment in attachments
+            robot.emit('slack-attachment', attachment)
 
   # Returns a grimoire score for a gamertag
   robot.respond /armory (.*)/i, (bot) =>
@@ -51,6 +40,15 @@ module.exports = (robot) ->
         getCharacterInventory(bot, playerId, characterId).then (response) ->
           for url in response
             bot.send url
+
+parseItemAttachment = (item) ->
+  fields =
+    pretext: '<item.itemLink|item.itemName>'
+    color: item.color
+    fallback: item.itemName
+    title: item.itemDescription
+    short: true
+    thum_url: item.iconLink
 
 # Gets general player information from a players gamertag
 getPlayerId = (bot, name) ->
@@ -90,6 +88,12 @@ getCharacterInventory = (bot, playerId, characterId) ->
   deferred = new Deferred()
   endpoint = '1/Account/'+playerId+'/Character/'+characterId+'/Inventory'
   params = 'definitions=true'
+  rarityColor =
+    Uncommon: 'rgba(245,245,245,0.9)'
+    Common: 'rgba(47, 107, 60, 0.9)'
+    Rare: 'rgba(85,127,158,0.9)'
+    Legendary: 'rgba(78,50,99,0.9)'
+    Exotic: 'rgba(206,174,50,0.9)'
 
   callback = (response) ->
     definitions = response.definitions.items
@@ -100,12 +104,24 @@ getCharacterInventory = (bot, playerId, characterId) ->
         if item.isEquipped then item.itemHash else false
     flatHashes = [].concat itemHashes...
 
-    equippedIcons = flatHashes.map (hash) ->
-      prefix = 'http://www.bungie.net'
-      suffix = definitions[hash].icon
-      prefix + suffix
+    items = flatHashes.map (hash) ->
+      defData = definitions[hash]
 
-    deferred.resolve(equippedIcons)
+      prefix = 'http://www.bungie.net'
+      iconSuffix = definitions[hash].icon
+      itemSuffix = '/en/Armory/Detail?item='+hash
+
+      data =
+        itemName: defData.itemName
+        itemDescription: defData.itemDescription
+        rarity: defData.tierTypeName
+        color: rarityColor[defData.tierTypeName]
+        iconLink: prefix + iconSuffix
+        itemLink: prefix + itemSuffix
+
+      data
+
+    deferred.resolve(items)
 
   makeRequest(bot, endpoint, callback, params)
   deferred.promise
