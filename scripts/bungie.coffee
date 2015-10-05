@@ -8,10 +8,10 @@ module.exports = (robot) ->
     fields.push
       title: 'NightStalker'
       value: 'Draw from the Void. Light the way.'
-      thumb_url: 'http://www.bungie.net/common/destiny_content/icons/70c0ac0b590646bd50ba4a6f5c6f5631.jpg'
 
     payload =
       message: msg.message
+      thumb_url: 'http://www.bungie.net/common/destiny_content/icons/70c0ac0b590646bd50ba4a6f5c6f5631.jpg'
       content:
         fallback: "Fallback Text"
         color: "#FF0000"
