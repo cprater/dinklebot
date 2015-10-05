@@ -4,18 +4,18 @@ Deferred = require('promise.coffee').Deferred
 module.exports = (robot) ->
   robot.respond /basic/i, (msg) =>
    #Test custom attachments
-    fields = []
-    fields.push
+    attachment =
+      thumb_url: 'http://www.bungie.net/common/destiny_content/icons/d0e43f0c27ea2c27ab1cf451a554482c.jpg'
+      fallback: "Fallback Text"
+      color: "#FF0000"
       title: 'NightStalker'
       value: 'Draw from the Void. Light the way.'
 
     payload =
       message: msg.message
-      thumb_url: 'http://www.bungie.net/common/destiny_content/icons/d0e43f0c27ea2c27ab1cf451a554482c.png'
-      content:
-        fallback: "Fallback Text"
-        color: "#FF0000"
-        fields: fields
+      attachments: [attachment]
+
+    console.log payload
 
     robot.emit 'slack-attachment', payload
 
