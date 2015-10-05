@@ -12,9 +12,14 @@ module.exports = (robot) ->
           attachments = response.map (item) ->
             parseItemAttachment(item)
 
-          for attachment in attachments
-            console.log attachment
-            robot.emit 'slack-attachment', attachment
+          payload =
+            message: 'Test message text'
+            attachments: attachments
+
+          console.log("payload")
+          console.log(payload)
+
+          robot.emit 'slack-attachment', payload
 
   # Returns a grimoire score for a gamertag
   robot.respond /armory (.*)/i, (bot) =>
@@ -44,14 +49,12 @@ module.exports = (robot) ->
 
 parseItemAttachment = (item) ->
   fields =
-    message: 'Test Message'
-    content:
-      pretext: '<item.itemLink|item.itemName>'
-      color: item.color
-      fallback: item.itemName
-      title: item.itemDescription
-      thumb_url: item.iconLink
-      short: true
+    title: item.itemName
+    title_link: item.itemLink
+    color: item.color
+    fallback: item.itemDescription
+    thumb_url: item.iconLink
+    text: item.itemDescription
 
 # Gets general player information from a players gamertag
 getPlayerId = (bot, name) ->
@@ -92,11 +95,17 @@ getCharacterInventory = (bot, playerId, characterId) ->
   endpoint = '1/Account/'+playerId+'/Character/'+characterId+'/Inventory'
   params = 'definitions=true'
   rarityColor =
-    Uncommon: 'rgba(245,245,245,0.9)'
-    Common: 'rgba(47, 107, 60, 0.9)'
-    Rare: 'rgba(85,127,158,0.9)'
-    Legendary: 'rgba(78,50,99,0.9)'
-    Exotic: 'rgba(206,174,50,0.9)'
+    Uncommon: '#f5f5f5'
+    Common: '#2f6b3c'
+    Rare: '#557f9e'
+    Legendary: '#4e3263'
+    Exotic: '#ceae32'
+  #rarityColor =
+  #  Uncommon: 'rgba(245,245,245,0.9)'
+  #  Common: 'rgba(47, 107, 60, 0.9)'
+  #  Rare: 'rgba(85,127,158,0.9)'
+  #  Legendary: 'rgba(78,50,99,0.9)'
+  #  Exotic: 'rgba(206,174,50,0.9)'
 
   callback = (response) ->
     definitions = response.definitions.items
