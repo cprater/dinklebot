@@ -1,5 +1,6 @@
 require('dotenv').load()
 Deferred = require('promise.coffee').Deferred
+DataHelper = require('./bungie-data-helper.coffee')
 
 module.exports = (robot) ->
   # Returns a grimoire score for a gamertag
@@ -26,7 +27,7 @@ module.exports = (robot) ->
       getCharacterId(bot, playerId).then (characterId) ->
         getCharacterInventory(bot, playerId, characterId).then (response) ->
           items = response.map (item) ->
-            parseItemAttachment(item)
+            DataHelper.parseItemAttachment(item)
 
           payload =
             message: bot.message
@@ -35,16 +36,6 @@ module.exports = (robot) ->
           console.log 'attachment', payload
           robot.emit 'slack-attachment', payload
 
-parseItemAttachment = (item) ->
-  data =
-    fallback: item.itemDescription
-    title: item.itemName
-    title_link: item.itemLink
-    color: item.color
-    text: item.itemDescription
-    thumb_url: item.iconLink
-
-  data
 
 # Gets general player information from a players gamertag
 getPlayerId = (bot, name) ->
