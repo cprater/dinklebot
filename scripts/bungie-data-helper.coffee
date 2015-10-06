@@ -2,7 +2,7 @@ DataHelper =
   parseItemAttachment: (item) ->
     fields =
       short: true
-      text: 'Primary Stat'
+      title: 'Primary Stat'
       value: item.primaryStat
 
     data =
@@ -13,7 +13,5 @@ DataHelper =
       text: item.itemDescription
       thumb_url: item.iconLink
       fields: [fields]
-
-    data
 
 module.exports = DataHelper
