@@ -1,5 +1,10 @@
 DataHelper =
   parseItemAttachment: (item) ->
+    fields =
+      short: true
+      text: 'Primary Stat'
+      value: item.primaryStat
+
     data =
       fallback: item.itemDescription
       title: item.itemName
@@ -7,7 +12,7 @@ DataHelper =
       color: item.color
       text: item.itemDescription
       thumb_url: item.iconLink
-      short: true
+      fields: [fields]
 
     data
 
