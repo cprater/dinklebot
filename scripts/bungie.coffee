@@ -96,12 +96,15 @@ getCharacterInventory = (bot, playerId, characterId) ->
       hash = item.itemHash
       defData = definitions[hash]
 
+      debugger
+
       prefix = 'http://www.bungie.net'
       iconSuffix = defData.icon
       itemSuffix = '/en/Armory/Detail?item='+hash
 
       itemName: defData.itemName
       itemDescription: defData.itemDescription
+      itemTypeName: defData.itemTypeName
       rarity: defData.tierTypeName
       color: rarityColor[defData.tierTypeName]
       iconLink: prefix + iconSuffix
