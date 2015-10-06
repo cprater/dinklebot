@@ -33,7 +33,7 @@ module.exports = (robot) ->
             message: bot.message
             attachments: items
 
-          console.log 'attachment', payload
+          #console.log 'attachment', payload
           robot.emit 'slack-attachment', payload
 
 
@@ -86,12 +86,24 @@ getCharacterInventory = (bot, playerId, characterId) ->
     definitions = response.definitions.items
     equippable = response.data.buckets.Equippable
 
-    itemHashes = equippable.map (x) ->
+    itemsData = equippable.filter (x) ->
       x.items.map (item) ->
-        if item.isEquipped then item.itemHash else false
-    flatHashes = [].concat itemHashes...
+        isEquipment =
+          item.isEquipped and
+          item.primaryStat
 
-    items = flatHashes.map (hash) ->
+        if isEquipment
+          hash: item.itemHash
+          primaryStat: item.primaryStat.value
+        else
+         false
+
+    flatHashes = [].concat itemsData...
+
+    items = itemsData.map (item) ->
+      debugger
+
+      hash = item.hash
       defData = definitions[hash]
 
       prefix = 'http://www.bungie.net'
@@ -105,9 +117,11 @@ getCharacterInventory = (bot, playerId, characterId) ->
         color: rarityColor[defData.tierTypeName]
         iconLink: prefix + iconSuffix
         itemLink: prefix + itemSuffix
+        primaryStat: item.primaryStat
 
       data
 
+    console.log items
     deferred.resolve(items)
 
   makeRequest(bot, endpoint, callback, params)
