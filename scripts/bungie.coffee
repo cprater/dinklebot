@@ -86,40 +86,31 @@ getCharacterInventory = (bot, playerId, characterId) ->
     definitions = response.definitions.items
     equippable = response.data.buckets.Equippable
 
-    itemsData = equippable.filter (x) ->
-      x.items.map (item) ->
-        isEquipment =
-          item.isEquipped and
-          item.primaryStat
+    validItems = equippable.map (x) ->
+      x.items.filter (item) ->
+        item.isEquipped and item.primaryStat
 
-        if isEquipment
-          hash: item.itemHash
-          primaryStat: item.primaryStat.value
-        else
-         false
+    flatItems = [].concat validItems...
 
-    flatHashes = [].concat itemsData...
+    itemsData = flatItems.map (item) ->
+      hash: item.itemHash
+      primaryStat: item.primaryStat.value
 
     items = itemsData.map (item) ->
-      debugger
-
       hash = item.hash
       defData = definitions[hash]
 
       prefix = 'http://www.bungie.net'
-      iconSuffix = definitions[hash].icon
+      iconSuffix = defData.icon
       itemSuffix = '/en/Armory/Detail?item='+hash
 
-      data =
-        itemName: defData.itemName
-        itemDescription: defData.itemDescription
-        rarity: defData.tierTypeName
-        color: rarityColor[defData.tierTypeName]
-        iconLink: prefix + iconSuffix
-        itemLink: prefix + itemSuffix
-        primaryStat: item.primaryStat
-
-      data
+      itemName: defData.itemName
+      itemDescription: defData.itemDescription
+      rarity: defData.tierTypeName
+      color: rarityColor[defData.tierTypeName]
+      iconLink: prefix + iconSuffix
+      itemLink: prefix + itemSuffix
+      primaryStat: item.primaryStat
 
     console.log items
     deferred.resolve(items)

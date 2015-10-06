@@ -5,9 +5,9 @@ set -e
 npm install
 export PATH="node_modules/.bin:node_modules/hubot/node_modules/.bin:$PATH"
 
-exec node_modules/.bin/hubot --name "dinklebot" "$@"
+#exec node_modules/.bin/hubot --name "dinklebot" "$@"
 
 # For debugging:
   # in a seperate terminal run:
     # node-inspector --no-preload --web-port 8989
-    # exec coffee --nodejs --debug node_modules/.bin/hubot --name "dinklebot" "$@"
+exec coffee --nodejs --debug node_modules/.bin/hubot --name "dinklebot" "$@"
