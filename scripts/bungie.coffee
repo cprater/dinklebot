@@ -109,7 +109,7 @@ getCharacterInventory = (bot, playerId, characterId) ->
       color: rarityColor[defData.tierTypeName]
       iconLink: prefix + iconSuffix
       itemLink: prefix + itemSuffix
-      primaryStat: item.primaryStat.value
+      primaryStat: item.primaryStat
       stats: item.stats
 
     deferred.resolve(items)

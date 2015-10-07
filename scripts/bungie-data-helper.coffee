@@ -6,7 +6,7 @@ class DataHelper
       @statDefs = JSON.parse body
 
   parseItemAttachment: (item) ->
-    statFields = @buildStats(item.stats) || []
+    statFields = @buildStats(item.stats, item.primaryStat) || []
 
     fallback: item.itemDescription
     title: item.itemName
@@ -16,8 +16,14 @@ class DataHelper
     thumb_url: item.iconLink
     fields: statFields
 
-  buildStats: (statsData) ->
+  buildStats: (statsData, primaryData) ->
     defs = @statDefs
+
+    primaryFound = defs[primaryData.statHash] || {}
+    primaryStat =
+      title: primaryFound.statName
+      value: primaryData.value
+      short: false
 
     foundStats = statsData.map (stat) ->
       found = defs[stat.statHash]
@@ -26,6 +32,8 @@ class DataHelper
       title: found.statName
       value: stat.value
       short: true
+
+    foundStats.unshift primaryStat if primaryFound
 
     foundStats.filter (x) -> x
 
