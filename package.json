@@ -25,7 +25,8 @@
     "sinon": "^1.13.0",
     "sinon-chai": "^2.7.0",
     "dotenv": "1.2.0",
-    "promise.coffee": "1.0.6"
+    "promise.coffee": "1.0.6",
+    "request": "2.64.0"
   },
   "engines": {
     "node": "0.10.x"

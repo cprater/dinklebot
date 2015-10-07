@@ -3,6 +3,9 @@ Deferred = require('promise.coffee').Deferred
 DataHelper = require('./bungie-data-helper.coffee')
 
 module.exports = (robot) ->
+  dataHelper = new DataHelper
+  dataHelper.fetchDefs()
+
   # Returns a grimoire score for a gamertag
   robot.respond /armory (.*)/i, (bot) =>
     playerName = bot.match[1]
@@ -26,13 +29,13 @@ module.exports = (robot) ->
     getPlayerId(bot, playerName).then (playerId) ->
       getCharacterId(bot, playerId).then (characterId) ->
         getCharacterInventory(bot, playerId, characterId).then (response) ->
-          items = response.map (item) -> DataHelper.parseItemAttachment(item)
+          items = response.map (item) -> dataHelper.parseItemAttachment(item)
 
           payload =
             message: bot.message
             attachments: items
 
-          console.log 'PAYLOAD', payload
+          console.log 'payload', payload
           robot.emit 'slack-attachment', payload
 
 
