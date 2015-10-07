@@ -2,6 +2,9 @@ DataHelper =
   parseItemAttachment: (item) ->
     statFields = @buildStats(item.stats) || []
 
+    console.log("statFields")
+    console.log(statFields)
+
     fallback: item.itemDescription
     title: item.itemName
     title_link: item.itemLink
