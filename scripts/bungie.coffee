@@ -26,8 +26,7 @@ module.exports = (robot) ->
     getPlayerId(bot, playerName).then (playerId) ->
       getCharacterId(bot, playerId).then (characterId) ->
         getCharacterInventory(bot, playerId, characterId).then (response) ->
-          items = response.map (item) ->
-            DataHelper.parseItemAttachment(item)
+          items = response.map (item) -> DataHelper.parseItemAttachment(item)
 
           payload =
             message: bot.message
@@ -102,11 +101,13 @@ getCharacterInventory = (bot, playerId, characterId) ->
 
       itemName: defData.itemName
       itemDescription: defData.itemDescription
+      itemTypeName: defData.itemTypeName
       rarity: defData.tierTypeName
       color: rarityColor[defData.tierTypeName]
       iconLink: prefix + iconSuffix
       itemLink: prefix + itemSuffix
       primaryStat: item.primaryStat.value
+      stats: item.stats
 
     deferred.resolve(items)
 
