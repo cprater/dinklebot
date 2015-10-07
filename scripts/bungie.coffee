@@ -1,3 +1,12 @@
+# Description:
+#   Interacts with the Bungie Destiny API.
+#
+# Commands:
+#   dinklebot armory <gamertag> - Returns that players Grimoire Score.
+#   dinklebot played <gamertag> - Returns that players Last played character and lightlevel
+#   dinklebot inventory <gamertag> - Returns that players Last played character's equipped inventory
+#
+
 require('dotenv').load()
 Deferred = require('promise.coffee').Deferred
 DataHelper = require('./bungie-data-helper.coffee')
