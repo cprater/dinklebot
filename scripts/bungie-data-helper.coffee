@@ -1,18 +1,28 @@
 DataHelper =
   parseItemAttachment: (item) ->
-    fields =
-      short: true
-      title: 'Primary Stat'
-      value: item.primaryStat
+    statFields = @buildStats(item.stats) || []
 
-    data =
-      fallback: item.itemDescription
-      title: item.itemName
-      title_link: item.itemLink
-      color: item.color
-      text: item.itemDescription
-      thumb_url: item.iconLink
-      fields: [fields]
+    fallback: item.itemDescription
+    title: item.itemName
+    title_link: item.itemLink
+    color: item.color
+    text: item.itemDescription
+    thumb_url: item.iconLink
+    fields: statFields
+
+  buildStats: (statsData) ->
+    statHashes = @statHashes
+    stats = statsData || []
+
+    foundStats = stats.map (stat) ->
+      found = statHashes[stat.statHash]
+      return if not found
+
+      title: found.statName
+      value: stat.value
+      short: true
+
+    foundStats.filter (x) -> x
 
 # STAT HASHES {{{
   statHashes:

@@ -26,8 +26,7 @@ module.exports = (robot) ->
     getPlayerId(bot, playerName).then (playerId) ->
       getCharacterId(bot, playerId).then (characterId) ->
         getCharacterInventory(bot, playerId, characterId).then (response) ->
-          items = response.map (item) ->
-            DataHelper.parseItemAttachment(item)
+          items = response.map (item) -> DataHelper.parseItemAttachment(item)
 
           payload =
             message: bot.message
@@ -96,8 +95,6 @@ getCharacterInventory = (bot, playerId, characterId) ->
       hash = item.itemHash
       defData = definitions[hash]
 
-      debugger
-
       prefix = 'http://www.bungie.net'
       iconSuffix = defData.icon
       itemSuffix = '/en/Armory/Detail?item='+hash
@@ -110,6 +107,7 @@ getCharacterInventory = (bot, playerId, characterId) ->
       iconLink: prefix + iconSuffix
       itemLink: prefix + itemSuffix
       primaryStat: item.primaryStat.value
+      stats: item.stats
 
     deferred.resolve(items)
 
