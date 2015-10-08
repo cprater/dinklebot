@@ -5,6 +5,7 @@
 #   dinklebot armory <gamertag> - Returns that players Grimoire Score.
 #   dinklebot played <gamertag> - Returns that players Last played character and lightlevel
 #   dinklebot inventory <gamertag> - Returns that players Last played character's equipped inventory
+#   dinklebot vendor xur - Returns Xur's Inventory or a warning when he isn't available
 #
 
 require('dotenv').load()
@@ -16,36 +17,43 @@ module.exports = (robot) ->
   dataHelper.fetchDefs()
 
   # Returns a grimoire score for a gamertag
-  robot.respond /armory (.*)/i, (bot) =>
-    playerName = bot.match[1]
+  robot.respond /armory (.*)/i, (res) =>
+    playerName = res.match[1]
 
-    getPlayerId(bot, playerName).then (playerId) ->
-      getGrimoireScore(bot, playerId).then (grimoireScore) ->
-        bot.send playerName+'\'s Grimoire Score is: '+grimoireScore
+    getPlayerId(res, playerName).then (playerId) ->
+      getGrimoireScore(res, playerId).then (grimoireScore) ->
+        res.send playerName+'\'s Grimoire Score is: '+grimoireScore
 
   # Returns an inventory object of last played character for a gamertag
-  robot.respond /played (.*)/i, (bot) ->
-    playerName = bot.match[1]
+  robot.respond /played (.*)/i, (res) ->
+    playerName = res.match[1]
 
-    getPlayerId(bot, playerName).then (playerId) ->
-      getLastCharacter(bot, playerId).then (response) ->
-        bot.send 'Guardian '+playerName+' last played on their '+response
+    getPlayerId(res, playerName).then (playerId) ->
+      getLastCharacter(res, playerId).then (response) ->
+        res.send 'Guardian '+playerName+' last played on their '+response
 
   # Returns a list of images equipped on the last character for a gamertag
-  robot.respond /inventory (.*)/i, (bot) ->
-    playerName = bot.match[1]
+  robot.respond /inventory (.*)/i, (res) ->
+    playerName = res.match[1]
 
-    getPlayerId(bot, playerName).then (playerId) ->
-      getCharacterId(bot, playerId).then (characterId) ->
-        getCharacterInventory(bot, playerId, characterId).then (response) ->
+    getPlayerId(res, playerName).then (playerId) ->
+      getCharacterId(res, playerId).then (characterId) ->
+        getCharacterInventory(res, playerId, characterId).then (response) ->
           items = response.map (item) -> dataHelper.parseItemAttachment(item)
 
           payload =
-            message: bot.message
+            message: res.message
             attachments: items
 
-          console.log 'payload', payload
           robot.emit 'slack-attachment', payload
+
+  # Returns a list of items for xur
+  robot.respond /vendor xur/i, (res) ->
+    getXurInventory(res).then (response) ->
+      if not response.data
+        res.send 'Xur isn\'t available yet and i gotta wait til he gets here to build it out'
+      else
+        # Process Xur's stuffs
 
 
 # Gets general player information from a players gamertag
@@ -149,6 +157,17 @@ getLastCharacter = (bot, playerId) ->
     phrase = 'level '+level+' '+gender+' '+charClass+', with a light level of: '+lightLevel
     deferred.resolve(phrase)
 
+  deferred.promise
+
+# Gets a players vendors
+getXurInventory = (bot) ->
+  deferred = new Deferred()
+  endpoint = 'Advisors/Xur'
+  params = 'definitions=true'
+  callback = (response) ->
+    deferred.resolve(response)
+
+  makeRequest(bot, endpoint, callback, params)
   deferred.promise
 
 # Gets a players Grimoire Score from their membershipId
