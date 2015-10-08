@@ -2,9 +2,9 @@ request = require('request')
 
 class DataHelper
   'fetchDefs': ->
-    @fetchStatDefs(error, response, body) =>
+    @fetchStatDefs (error, response, body) =>
       @statDefs = JSON.parse(body)
-    @fetchVendorDefs(error, response, body) =>
+    @fetchVendorDefs (error, response, body) =>
       @vendorDefs = JSON.parse(body)
 
   'parseItemsForAttachment': (items) ->
