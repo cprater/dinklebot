@@ -12,8 +12,9 @@ require('dotenv').load()
 Deferred = require('promise.coffee').Deferred
 DataHelper = require('./bungie-data-helper.coffee')
 
+dataHelper = new DataHelper
+
 module.exports = (robot) ->
-  dataHelper = new DataHelper
   dataHelper.fetchDefs()
 
   # Returns a grimoire score for a gamertag
@@ -45,16 +46,29 @@ module.exports = (robot) ->
             message: res.message
             attachments: items
 
+          console.log 'payload', payload
           robot.emit 'slack-attachment', payload
 
   # Returns a list of items for xur
   robot.respond /vendor xur/i, (res) ->
     getXurInventory(res).then (response) ->
-      if not response.data
+      responseData = response.data
+
+      if not responseData
         res.send 'Xur isn\'t available yet and i gotta wait til he gets here to build it out'
       else
-        # Process Xur's stuffs
+        itemsDefs = response.definitions.items
+        itemsCategories = responseData.saleItemCategories
+        exoticCategory = itemsCategories.filter (cat) -> cat.categoryTitle == 'Exotic Gear'
+        exoticData = exoticCategory[0].saleItems
+        itemsData = exoticData.map (exotic) -> dataHelper.serializeFromApi(exotic.item, itemsDefs)
 
+        payload =
+          message: res.message
+          attachments: dataHelper.parseItemsForAttachment(itemsData)
+
+        console.log 'payload', payload
+        robot.emit 'slack-attachment', payload
 
 # Gets general player information from a players gamertag
 getPlayerId = (bot, name) ->
@@ -94,12 +108,6 @@ getCharacterInventory = (bot, playerId, characterId) ->
   deferred = new Deferred()
   endpoint = '1/Account/'+playerId+'/Character/'+characterId+'/Inventory'
   params = 'definitions=true'
-  rarityColor =
-    Uncommon: '#f5f5f5'
-    Common: '#2f6b3c'
-    Rare: '#557f9e'
-    Legendary: '#4e3263'
-    Exotic: '#ceae32'
 
   callback = (response) ->
     definitions = response.definitions.items
@@ -111,23 +119,7 @@ getCharacterInventory = (bot, playerId, characterId) ->
 
     itemsData = [].concat validItems...
 
-    items = itemsData.map (item) ->
-      hash = item.itemHash
-      defData = definitions[hash]
-
-      prefix = 'http://www.bungie.net'
-      iconSuffix = defData.icon
-      itemSuffix = '/en/Armory/Detail?item='+hash
-
-      itemName: defData.itemName
-      itemDescription: defData.itemDescription
-      itemTypeName: defData.itemTypeName
-      rarity: defData.tierTypeName
-      color: rarityColor[defData.tierTypeName]
-      iconLink: prefix + iconSuffix
-      itemLink: prefix + itemSuffix
-      primaryStat: item.primaryStat
-      stats: item.stats
+    items = itemsData.map (item) -> dataHelper.serializeFromApi(item, definitions)
 
     deferred.resolve(items)
 
