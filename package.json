@@ -5,6 +5,9 @@
   "author": "cprater <cprater23@gmail.com>",
   "description": "A simple helpful robot for your Company",
   "dependencies": {
+    "chai": "^2.1.1",
+    "clark": "0.0.6",
+    "coffee-script": "~1.6",
     "hubot": "^2.16.0",
     "hubot-diagnostics": "0.0.1",
     "hubot-google-translate": "^0.2.0",
@@ -17,13 +20,11 @@
     "hubot-scripts": "^2.16.2",
     "hubot-shipit": "^0.2.0",
     "hubot-slack": "^3.3.0",
-    "coffee-script": "~1.6",
-    "underscore": ">= 1.0",
-    "chai": "^2.1.1",
-    "clark": "0.0.6",
     "mocha": "^2.1.0",
     "sinon": "^1.13.0",
-    "sinon-chai": "^2.7.0"
+    "sinon-chai": "^2.7.0",
+    "slack-destiny-bot": "^1.0.4",
+    "underscore": ">= 1.0"
   },
   "engines": {
     "node": "0.10.x"
