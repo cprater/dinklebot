@@ -23,7 +23,7 @@
     "mocha": "^2.1.0",
     "sinon": "^1.13.0",
     "sinon-chai": "^2.7.0",
-    "slack-destiny-bot": "^1.0.4",
+    "slack-destiny-bot": "^1.1.4",
     "underscore": ">= 1.0"
   },
   "engines": {
